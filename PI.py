@@ -2,6 +2,8 @@ import random
 import math
 from multiprocessing import Pool
 import threading
+import time
+from tkinter import Tk, Button, Label, Entry, StringVar
 
 def monte_carlo_circle(n):
     inside = 0
@@ -59,26 +61,67 @@ def calculate_pi_threading_with_semaphore(n_points, n_threads):
         t.join()
     return inside[0] / n_points
 
-
-import time
-
-if __name__ == '__main__':
-    n_points = 1000000
-    n_processes = 4
-    n_threads = 4
-
+# Funções para a interface gráfica
+def start_multiprocessing():
+    n_points = int(entry_points.get())
+    n_processes = int(entry_processes.get())
     start = time.time()
     pi_multiprocessing = calculate_pi_multiprocessing(n_points, n_processes)
-    print(f"Pi (multiprocessing): {pi_multiprocessing}, Time: {time.time() - start}")
+    label_result.config(text=f"Pi (multiprocessing): {pi_multiprocessing}, Time: {time.time() - start}")
 
+def start_threading():
+    n_points = int(entry_points.get())
+    n_threads = int(entry_threads.get())
     start = time.time()
     pi_threading = calculate_pi_threading(n_points, n_threads)
-    print(f"Pi (threading): {pi_threading}, Time: {time.time() - start}")
+    label_result.config(text=f"Pi (threading): {pi_threading}, Time: {time.time() - start}")
 
+def start_concurrent_futures():
+    n_points = int(entry_points.get())
+    n_threads = int(entry_threads.get())
     start = time.time()
     pi_concurrent_futures = calculate_pi_concurrent_futures(n_points, n_threads)
-    print(f"Pi (concurrent.futures): {pi_concurrent_futures}, Time: {time.time() - start}")
+    label_result.config(text=f"Pi (concurrent.futures): {pi_concurrent_futures}, Time: {time.time() - start}")
 
+def start_threading_with_semaphore():
+    n_points = int(entry_points.get())
+    n_threads = int(entry_threads.get())
     start = time.time()
     pi_threading_with_semaphore = calculate_pi_threading_with_semaphore(n_points, n_threads)
-    print(f"Pi (threading with semaphore): {pi_threading_with_semaphore}, Time: {time.time() - start}")
+    label_result.config(text=f"Pi (threading with semaphore): {pi_threading_with_semaphore}, Time: {time.time() - start}")
+
+# Criação da interface gráfica
+root = Tk()
+root.title("Monte Carlo Pi Calculator")
+
+label_points = Label(root, text="Number of Points:")
+label_points.pack()
+entry_points = Entry(root)
+entry_points.pack()
+
+label_processes = Label(root, text="Number of Processes:")
+label_processes.pack()
+entry_processes = Entry(root)
+entry_processes.pack()
+
+label_threads = Label(root, text="Number of Threads:")
+label_threads.pack()
+entry_threads = Entry(root)
+entry_threads.pack()
+
+button_multiprocessing = Button(root, text="Calculate Pi (Multiprocessing)", command=start_multiprocessing)
+button_multiprocessing.pack()
+
+button_threading = Button(root, text="Calculate Pi (Threading)", command=start_threading)
+button_threading.pack()
+
+button_concurrent_futures = Button(root, text="Calculate Pi (Concurrent Futures)", command=start_concurrent_futures)
+button_concurrent_futures.pack()
+
+button_threading_with_semaphore = Button(root, text="Calculate Pi (Threading with Semaphore)", command=start_threading_with_semaphore)
+button_threading_with_semaphore.pack()
+
+label_result = Label(root, text="")
+label_result.pack()
+
+root.mainloop()
